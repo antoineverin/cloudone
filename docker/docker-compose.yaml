@@ -1,0 +1,39 @@
+x-base: &base
+  restart: always
+  networks:
+    - cloudone
+
+services:
+  wordpress:
+    build: wordpress
+    volumes:
+      - wordpress:/var/www/html
+  
+  mysql:
+    <<: *base
+    build: mysql
+    volumes:
+      - mysql:/var/lib/mysql
+
+  fpm:
+    <<: *base
+    build: fpm
+  
+  phpmyadmin:
+    <<: *base
+    build: phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+
+  nginx:
+    <<: *base
+    build: nginx
+    ports:
+      - "8080:80"
+
+volumes:
+  wordpress:
+  mysql:
+
+networks:
+  cloudone:

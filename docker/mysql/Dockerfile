@@ -1,0 +1,3 @@
+FROM mysql:9.4.0@sha256:91447968e66961302339ec4dc4d385f5e1a957d98e63c7d52ecf8b1de0907346
+
+RUN apt update && apt upgrade -y
