@@ -1,35 +1,52 @@
 x-base: &base
   restart: always
+  env_file: .env
   networks:
     - cloudone
 
 services:
   wordpress:
+    <<: *base
     build: wordpress
     volumes:
       - wordpress:/var/www/html
-  
+    healthcheck:
+      test: "curl -fs http://localhost"
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      mysql:
+        condition: service_healthy
+
   mysql:
     <<: *base
     build: mysql
     volumes:
       - mysql:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping -h localhost -u root -p$MYSQL_ROOT_PASSWORD
+      interval: 3s
+      timeout: 10s
+      retries: 5
 
-  fpm:
-    <<: *base
-    build: fpm
-  
   phpmyadmin:
     <<: *base
     build: phpmyadmin
     environment:
       - PMA_ARBITRARY=1
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   nginx:
     <<: *base
     build: nginx
     ports:
-      - "8080:80"
+      - "80:80"
+    depends_on:
+      wordpress:
+        condition: service_healthy
 
 volumes:
   wordpress:
