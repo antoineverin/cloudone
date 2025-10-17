@@ -1,0 +1,7 @@
+---
+- name: Setup and deploy
+  hosts: all
+  become: true
+  roles:
+    - role: docker
+    - role: app

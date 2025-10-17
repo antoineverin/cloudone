@@ -1,0 +1,36 @@
+---
+- name: Create app folder
+  tags:
+    - deploy
+  ansible.builtin.file:
+    path: '{{ app_dir }}'
+    state: directory
+    mode: '744'
+
+- name: Copy files
+  tags:
+    - deploy
+  ansible.builtin.copy:
+    dest: '{{ app_dir }}'
+    src: '{{ app_src_dir }}'
+    mode: '744'
+
+- name: Down
+  tags:
+    - deploy
+    - down
+  ansible.builtin.command:
+    chdir: '{{ app_dir }}'
+    cmd: 'docker compose down'
+  register: app_output
+  changed_when: app_output.rc != 0
+
+- name: Up
+  tags:
+    - deploy
+    - up
+  ansible.builtin.command:
+    chdir: '{{ app_dir }}'
+    cmd: 'docker compose up --build -d'
+  register: app_output
+  changed_when: app_output.rc != 0
