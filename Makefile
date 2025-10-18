@@ -15,4 +15,4 @@ setup:
 deploy:
 	source $(VENV_ACTIVATE)
 	cd $(ANSIBLE_FOLDER)
-	ansible-playbook playbook.yaml -i inventory.yaml -u root
+	ansible-playbook playbook.yaml -i inventory.yaml
