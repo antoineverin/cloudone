@@ -34,3 +34,10 @@
     cmd: 'docker compose up --build -d'
   register: app_output
   changed_when: app_output.rc != 0
+
+- name: Configuring wordpress
+  ansible.builtin.command:
+    chdir: '{{ app_dir }}'
+    cmd: 'docker compose exec wordpress {{ app_wp_config }}'
+  register: app_output
+  changed_when: app_output.rc != 0

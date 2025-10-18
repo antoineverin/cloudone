@@ -1,3 +1,4 @@
 ---
 app_dir: /app
 app_src_dir: "{{ playbook_dir }}/../docker/"
+app_wp_config: /etc/wp-config.sh
