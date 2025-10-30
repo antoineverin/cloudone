@@ -23,7 +23,6 @@
     dest: '{{ app_dir }}/{{ item }}'
     mode: '744'
   with_items:
-    - compose.yaml
     - .env
     - nginx/default.conf
 
