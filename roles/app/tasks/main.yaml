@@ -12,8 +12,20 @@
     - deploy
   ansible.builtin.copy:
     dest: '{{ app_dir }}'
-    src: '{{ app_src_dir }}'
+    src: '.'
     mode: '744'
+
+- name: Template files
+  tags:
+    - deploy
+  ansible.builtin.template:
+    src: '{{ item }}.j2'
+    dest: '{{ app_dir }}/{{ item }}'
+    mode: '744'
+  with_items:
+    - compose.yaml
+    - .env
+    - nginx/default.conf
 
 - name: Down
   tags:

@@ -1,0 +1,24 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+  config.vm.box_version = "20240821.0.1"
+  
+  config.vm.define "cloudone" do |c|
+    c.vm.hostname = "cloudone"
+    c.vm.network "private_network", ip: "192.168.56.110"
+  end
+
+  config.vm.define "cloudtwo" do |c|
+    c.vm.hostname = "cloudtwo"
+    c.vm.network "private_network", ip: "192.168.56.111"
+  end
+
+  config.vm.provision "shell" do |s|
+    ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_ed25519.pub").first.strip
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+    SHELL
+  end
+end

@@ -1,5 +1,0 @@
----
-host:
-  hosts:
-    cloudone.iamantoine.fr:
-      ansible_user: root

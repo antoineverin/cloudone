@@ -4,7 +4,17 @@ x-base: &base
   networks:
     - cloudone
 
+name: 'cloudone'
+
 services:
+  certbot:
+    build: certbot
+    command: certonly -n --agree-tos --dns-ovh --dns-ovh-credentials credentials.ini -d ${DOMAIN}
+    volumes:
+      - ssl:/etc/letsencrypt/
+    ports:
+      - 80:80
+
   wordpress:
     <<: *base
     build: wordpress
@@ -35,6 +45,11 @@ services:
     build: phpmyadmin
     environment:
       - PMA_ARBITRARY=1
+    healthcheck:
+      test: "curl -fs http://localhost"
+      interval: 3s
+      timeout: 5s
+      retries: 5
     depends_on:
       mysql:
         condition: service_healthy
@@ -42,16 +57,23 @@ services:
   nginx:
     <<: *base
     build: nginx
+    volumes:
+      - ssl:/etc/letsencrypt:ro
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       wordpress:
         condition: service_healthy
+      phpmyadmin:
+        condition: service_healthy
+      certbot:
+        condition: service_completed_successfully
 
 volumes:
   wordpress:
   mysql:
+  ssl:
 
 networks:
   cloudone:
