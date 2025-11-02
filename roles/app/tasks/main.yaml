@@ -6,49 +6,54 @@
     path: '{{ app_dir }}'
     state: directory
     mode: '744'
+    owner: cloudone
+- name: Become
+  become: true
+  become_user: cloudone
+  block:
 
-- name: Copy files
-  tags:
-    - deploy
-  ansible.builtin.copy:
-    dest: '{{ app_dir }}'
-    src: '.'
-    mode: '744'
+    - name: Copy files
+      tags:
+        - deploy
+      ansible.builtin.copy:
+        dest: '{{ app_dir }}'
+        src: '.'
+        mode: '744'
 
-- name: Template files
-  tags:
-    - deploy
-  ansible.builtin.template:
-    src: '{{ item }}.j2'
-    dest: '{{ app_dir }}/{{ item }}'
-    mode: '744'
-  with_items:
-    - .env
-    - nginx/default.conf
+    - name: Template files
+      tags:
+        - deploy
+      ansible.builtin.template:
+        src: '{{ item }}.j2'
+        dest: '{{ app_dir }}/{{ item }}'
+        mode: '744'
+      with_items:
+        - .env
+        - nginx/default.conf
 
-- name: Down
-  tags:
-    - deploy
-    - down
-  ansible.builtin.command:
-    chdir: '{{ app_dir }}'
-    cmd: 'docker compose down'
-  register: app_output
-  changed_when: app_output.rc != 0
+    - name: Down
+      tags:
+        - deploy
+        - down
+      ansible.builtin.command:
+        chdir: '{{ app_dir }}'
+        cmd: 'docker compose down'
+      register: app_output
+      changed_when: app_output.rc != 0
 
-- name: Up
-  tags:
-    - deploy
-    - up
-  ansible.builtin.command:
-    chdir: '{{ app_dir }}'
-    cmd: 'docker compose up --build -d'
-  register: app_output
-  changed_when: app_output.rc != 0
+    - name: Up
+      tags:
+        - deploy
+        - up
+      ansible.builtin.command:
+        chdir: '{{ app_dir }}'
+        cmd: 'docker compose up --build -d'
+      register: app_output
+      changed_when: app_output.rc != 0
 
-- name: Configuring wordpress
-  ansible.builtin.command:
-    chdir: '{{ app_dir }}'
-    cmd: 'docker compose exec wordpress {{ app_wp_config }}'
-  register: app_output
-  changed_when: app_output.rc != 0
+    - name: Configuring wordpress
+      ansible.builtin.command:
+        chdir: '{{ app_dir }}'
+        cmd: 'docker compose exec wordpress {{ app_wp_config }}'
+      register: app_output
+      changed_when: app_output.rc != 0

@@ -1,0 +1,9 @@
+- name: Sudo
+  become: true
+  block:
+    - name: Create user
+      ansible.builtin.user:
+        name: cloudone
+        groups: ['docker']
+        append: true
+        state: present
