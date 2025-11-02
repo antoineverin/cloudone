@@ -9,7 +9,7 @@ name: 'cloudone'
 services:
   certbot:
     build: certbot
-    command: certonly -n --test-cert --agree-tos --dns-ovh --dns-ovh-credentials credentials.ini -d ${DOMAIN}
+    command: certonly -n --agree-tos --dns-ovh --dns-ovh-credentials credentials.ini -d ${DOMAIN}
     volumes:
       - ssl:/etc/letsencrypt/
     ports:
