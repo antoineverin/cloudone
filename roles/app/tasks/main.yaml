@@ -7,11 +7,11 @@
     state: directory
     mode: '744'
     owner: cloudone
+
 - name: Become
   become: true
   become_user: cloudone
   block:
-
     - name: Copy files
       tags:
         - deploy
@@ -41,13 +41,33 @@
       register: app_output
       changed_when: app_output.rc != 0
 
+    - name: Build images
+      tags:
+        - deploy
+      ansible.builtin.command:
+        chdir: '{{ app_dir }}'
+        cmd: 'docker compose build'
+      register: app_output
+      changed_when: app_output.rc != 0
+
+    - name: Generate SSL certificate
+      tags:
+        - up
+        - deploy
+        - ssl
+      ansible.builtin.command:
+        chdir: '{{ app_dir }}'
+        cmd: 'docker compose run certbot'
+      register: app_output
+      changed_when: app_output.rc != 0
+
     - name: Up
       tags:
         - deploy
         - up
       ansible.builtin.command:
         chdir: '{{ app_dir }}'
-        cmd: 'docker compose up --build -d'
+        cmd: 'docker compose up -d'
       register: app_output
       changed_when: app_output.rc != 0
 
