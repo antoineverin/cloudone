@@ -1,3 +1,5 @@
 FROM phpmyadmin:5.2.2@sha256:23d39937547eebf3cb0d81b9b655e924afb82b5cdd573c9dcd9064b5c0610d4b
 
 RUN apt update && apt upgrade -y
+
+COPY config.user.inc.php /etc/phpmyadmin/config.user.inc.php
