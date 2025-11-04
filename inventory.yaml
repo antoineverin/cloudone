@@ -2,10 +2,12 @@
 cloudone:
   hosts:
     cloudone.iamantoine.fr:
+      ansible_user: ubuntu
       domain: cloudone.iamantoine.fr
       app_name: cloudone
 cloudtwo:
   hosts:
     cloudtwo.iamantoine.fr:
+      ansible_user: ubuntu
       domain: cloudtwo.iamantoine.fr
       app_name: cloudtwo
